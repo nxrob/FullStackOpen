@@ -1,34 +1,12 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-const Filter = ({ props: { filterString, handleFilterInput } }) => {
-  return (
-    <> Filter: <input value={filterString} onChange={handleFilterInput} /> </>
-  )
-}
+import Form from './components/Form'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
 
-const Form = ({ states, handlers }) => {
-  return (
-    <>
-      <h2>Add a person</h2>
-      <form>
-        <div>
-          name: <input value={states.newName} onChange={(e) => handlers.setNewName(e.target.value)} />
-        </div>
-        <div>
-          phone number: <input value={states.newPhoneNumber} onChange={(e) => handlers.setNewPhoneNumber(e.target.value)} />
-          <button type="submit" onClick={handlers.handleAddPerson}>add</button>
-        </div>
-      </form>
-    </>
-  )
-}
+import personService from './service/persons'
 
-const Persons = ({ filteredContacts }) => {
-  return (
-    filteredContacts.map((person) => <p key={person.name}>{person.name} - {person.number}</p>)
-  )
-}
 
 //****************************-> APP <-********************************
 const App = () => {
@@ -40,16 +18,11 @@ const App = () => {
   const [filteredContacts, setFilteredContacts] = useState(persons)
 
   useEffect(() => {
-    console.log("effect")
-    axios.get('http://localhost:3001/persons')
-        .then(r => {
-          console.log("Promised fulfilled with response: ", r.data)
-          setPersons(r.data)
-          setFilteredContacts(r.data)
-        })
+    personService.getAll().then(persons => {
+      setPersons(persons)
+      setFilteredContacts(persons)
+    })
   }, [])
-
-  console.log("rendering ", persons.length, " people")
 
   const handleAddPerson = (e) => {
 
@@ -67,12 +40,14 @@ const App = () => {
         name: newName,
         number: newPhoneNumber
       }
-      setPersons(persons.concat(personToAdd))
-      setNewName('')
-      setNewPhoneNumber('')
-      if (personToAdd.name.includes(filterString)) {
-        setFilteredContacts(filteredContacts.concat(personToAdd))
-      }
+      personService.create(personToAdd).then(addedPerson => {
+        setPersons(persons.concat(addedPerson))
+        setNewName('')
+        setNewPhoneNumber('')
+        if (addedPerson.name.includes(filterString)) {
+          setFilteredContacts(filteredContacts.concat(addedPerson))
+        }
+      })
     }
 
   }
@@ -81,6 +56,8 @@ const App = () => {
     setFilterString(e.target.value)
     setFilteredContacts(persons.filter((person) => person.name.toUpperCase().includes((e.target.value).toUpperCase())))
   }
+
+  // const handleDeleteContact = ()
 
 
   return (
