@@ -2,14 +2,22 @@ import axios from 'axios'
 
 const getAll = () => {
     const request = axios.get('http://localhost:3001/persons')
-    request.then(r => console.log("People fetched: ", r.data))
     return request.then(r => r.data)
 }
 
 const create = (person) => {
     const request = axios.post('http://localhost:3001/persons', person)
-    request.then(r => console.log("Person created: ", r.data))
     return request.then(r => r.data)
 }
 
-export default { getAll, create }
+const deleteContact = (person) => {
+    const request = axios.delete(`http://localhost:3001/persons/${person.id}`)
+    return request.then(() => console.log("deleted"))
+}
+
+const update = (person) => {
+    const request = axios.put(`http://localhost:3001/persons/${person.id}`, person)
+    return request.then(r => r.data)
+}
+
+export default { getAll, create, deleteContact, update }

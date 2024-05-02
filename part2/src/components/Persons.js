@@ -1,23 +1,21 @@
+import Person from "./Person"
+
 const Persons = ({ filteredContacts, handleDeleteContact }) => {
-    console.log("Filtered: ", filteredContacts.map(p => p.name))
     return (
         <table>
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Number</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                {filteredContacts.map((person) => {
-                    return (
-                        <tr>
-                            <td>{person.name}</td>
-                            <td>{person.number}</td>
-                            <td><button onClick={handleDeleteContact}>Delete</button></td>
-                        </tr>
-                    )
-                })}
+                {filteredContacts.map((person) =>
+                    <Person key={person.id}
+                            person={person}
+                            handleDeleteContact={() => handleDeleteContact(person)}/>
+                )}
             </tbody>
         </table>
     )
