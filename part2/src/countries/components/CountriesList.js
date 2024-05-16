@@ -1,6 +1,6 @@
 import CountryDetail from "./CountryDetail"
 
-const CountriesList = ({ countriesToShow, showCountryDetail }) => {
+const CountriesList = ({ countriesToShow, showCountryDetail, showCountry }) => {
     return (
         <>
             {countriesToShow && countriesToShow.map(c => {
@@ -12,7 +12,9 @@ const CountriesList = ({ countriesToShow, showCountryDetail }) => {
                             </>
                             :
                             <>
-                                {c.name.common}<br />
+                                {c.name.common}
+                                <button onClick={() => showCountry(c.name.common)}>Show</button>
+                                <br />
                             </>}
                     </>
                 )
